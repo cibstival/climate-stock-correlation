@@ -1246,11 +1246,71 @@
                     },
                     tooltip: {
                         backgroundColor: '#1d2433',
-                        titleColor: '#e6edf3',
-                        bodyColor: '#8b949e',
-                        borderColor: '#30363d',
-                        borderWidth: 1,
-                        padding: 12
+    titleColor: '#e6edf3',
+    bodyColor: '#8b949e',
+    borderColor: '#30363d',
+    borderWidth: 1,
+    padding: 15,
+    displayColors: false,
+    callbacks: {
+        title: function(context) {
+            const year = context[0].label;
+            const eventsInYear = allEvents.filter(e => e.year == year);
+            if (eventsInYear.length > 0) {
+                return year + '년 (' + eventsInYear.length + '개 이벤트)';
+            }
+            return year + '년';
+        },
+        label: function(context) {
+            // 기후 이벤트일 때 특별 표시
+            if (context.dataset.label === '기후 이벤트') {
+                const year = context.parsed.x;
+                // 해당 연도의 모든 이벤트를 영향도 절댓값 순으로 정렬
+                const eventsInYear = allEvents
+                    .filter(e => e.year === year)
+                    .sort((a, b) => Math.abs(b.impact) - Math.abs(a.impact));
+                
+                // 상위 3개만 표시
+                const topEvents = eventsInYear.slice(0, 3);
+                const lines = [];
+                
+                topEvents.forEach((event, idx) => {
+                    const icon = event.impact > 0 ? '📈' : event.impact < 0 ? '📉' : '📊';
+                    const impactText = event.impact > 0 ? '+' + event.impact : event.impact;
+                    lines.push(`${idx + 1}. ${icon} ${event.label} (${impactText}%)`);
+                });
+                
+                // 더 많은 이벤트가 있으면 알림
+                if (eventsInYear.length > 3) {
+                    lines.push(`...외 ${eventsInYear.length - 3}개 더`);
+                }
+                
+                return lines;
+            }
+            return context.dataset.label + ': ' + context.parsed.y.toLocaleString();
+        },
+        afterLabel: function(context) {
+            // 일반 지수에 마우스 올렸을 때도 해당 연도 이벤트 표시
+            if (context.dataset.label !== '기후 이벤트') {
+                const year = context.label;
+                const eventsInYear = allEvents
+                    .filter(e => e.year == year)
+                    .sort((a, b) => Math.abs(b.impact) - Math.abs(a.impact))
+                    .slice(0, 2); // 상위 2개만
+                
+                if (eventsInYear.length > 0) {
+                    const lines = ['', '🌍 주요 기후 이벤트:'];
+                    eventsInYear.forEach(event => {
+                        const icon = event.impact > 0 ? '📈' : event.impact < 0 ? '📉' : '📊';
+                        lines.push(`  ${icon} ${event.label}`);
+                    });
+                    return lines;
+                }
+            }
+            return [];
+        }
+    }
+}
                     }
                 },
                 scales: {
