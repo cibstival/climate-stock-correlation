@@ -628,7 +628,7 @@
                 <div class="stat-label">분석 기간</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value">32건</div>
+                <div class="stat-value">100건</div>
                 <div class="stat-label">주요 이벤트</div>
             </div>
             <div class="stat-card">
@@ -803,7 +803,7 @@
 
         <!-- Timeline Section -->
         <div class="timeline-section">
-            <h2 class="section-title">상세 이벤트 타임라인 (32개 주요 이벤트)</h2>
+            <h2 class="section-title">상세 이벤트 타임라인 (100개 주요 이벤트)</h2>
             <div class="timeline" id="timelineContainer">
                 <!-- JavaScript로 동적 생성 -->
             </div>
@@ -877,38 +877,118 @@
 
         // 확장된 기후 이벤트 (32개)
         const allEvents = [
-            { year: 1985, month: 5, label: '남극 오존홀 발견', type: 'climate', impact: 0, category: 'discovery' },
-            { year: 1988, month: 6, label: '한센 의회 증언', type: 'policy', impact: 0.5, category: 'awareness' },
-            { year: 1992, month: 6, label: '리우 지구정상회의', type: 'policy', impact: 1.2, category: 'policy' },
-            { year: 1995, month: 12, label: 'COP1 베를린', type: 'policy', impact: 0.8, category: 'policy' },
-            { year: 1997, month: 12, label: '교토 의정서', type: 'policy', impact: 2.1, category: 'policy' },
-            { year: 1998, month: 8, label: '슈퍼 엘니뇨', type: 'climate', impact: -1.5, category: 'disaster' },
-            { year: 2003, month: 8, label: '유럽 폭염', type: 'disaster', impact: -2.3, category: 'disaster' },
-            { year: 2005, month: 8, label: '허리케인 카트리나', type: 'disaster', impact: -4.2, category: 'disaster' },
-            { year: 2006, month: 5, label: '불편한 진실', type: 'climate', impact: 1.8, category: 'awareness' },
-            { year: 2007, month: 10, label: 'IPCC 노벨상', type: 'policy', impact: 1.5, category: 'awareness' },
-            { year: 2009, month: 12, label: 'COP15 코펜하겐', type: 'policy', impact: -0.5, category: 'policy' },
-            { year: 2010, month: 7, label: '러시아 폭염', type: 'disaster', impact: -2.8, category: 'disaster' },
-            { year: 2011, month: 3, label: '후쿠시마 원전사고', type: 'disaster', impact: -5.5, category: 'disaster' },
-            { year: 2012, month: 10, label: '허리케인 샌디', type: 'disaster', impact: -3.7, category: 'disaster' },
-            { year: 2013, month: 9, label: 'IPCC 5차 보고서', type: 'policy', impact: 0.9, category: 'awareness' },
-            { year: 2014, month: 11, label: '미중 기후 합의', type: 'policy', impact: 2.3, category: 'policy' },
-            { year: 2015, month: 12, label: '파리 기후협약', type: 'policy', impact: 4.5, category: 'policy' },
-            { year: 2016, month: 4, label: '파리협약 서명', type: 'policy', impact: 1.7, category: 'policy' },
-            { year: 2017, month: 6, label: '미국 파리협약 탈퇴', type: 'policy', impact: -2.1, category: 'policy' },
-            { year: 2018, month: 7, label: '전 세계 동시 폭염', type: 'disaster', impact: -1.9, category: 'disaster' },
-            { year: 2018, month: 10, label: 'IPCC 1.5도 특별보고서', type: 'policy', impact: 1.2, category: 'awareness' },
-            { year: 2019, month: 9, label: '그레타 툰베리 UN 연설', type: 'climate', impact: 2.8, category: 'awareness' },
-            { year: 2019, month: 12, label: '호주 산불 시작', type: 'disaster', impact: -3.2, category: 'disaster' },
-            { year: 2020, month: 2, label: '호주 산불 정점', type: 'disaster', impact: -4.8, category: 'disaster' },
-            { year: 2020, month: 11, label: '미국 파리협약 복귀', type: 'policy', impact: 3.5, category: 'policy' },
-            { year: 2021, month: 8, label: 'IPCC 6차 보고서', type: 'policy', impact: 2.9, category: 'awareness' },
-            { year: 2021, month: 11, label: 'COP26 글래스고', type: 'policy', impact: 1.8, category: 'policy' },
-            { year: 2022, month: 7, label: '유럽 가뭄', type: 'disaster', impact: -3.5, category: 'disaster' },
-            { year: 2022, month: 11, label: 'COP27 샤름엘셰이크', type: 'policy', impact: 0.7, category: 'policy' },
-            { year: 2023, month: 7, label: '역대 최고 기온', type: 'climate', impact: -2.4, category: 'disaster' },
-            { year: 2023, month: 12, label: 'COP28 두바이', type: 'policy', impact: 2.1, category: 'policy' },
-            { year: 2024, month: 6, label: '기후 기술 투자 붐', type: 'climate', impact: 5.2, category: 'opportunity' }
+             { year: 1985, month: 5, label: '남극 오존홀 발견', type: 'climate', impact: 0, category: 'discovery' },
+    { year: 1986, month: 4, label: '체르노빌 원전사고', type: 'disaster', impact: -2.1, category: 'disaster' },
+    { year: 1987, month: 9, label: '몬트리올 의정서', type: 'policy', impact: 0.8, category: 'policy' },
+    { year: 1988, month: 6, label: '한센 의회 증언', type: 'policy', impact: 0.5, category: 'awareness' },
+    { year: 1988, month: 9, label: 'IPCC 설립', type: 'policy', impact: 0.3, category: 'policy' },
+    { year: 1989, month: 3, label: '엑슨 발데즈 기름 유출', type: 'disaster', impact: -1.8, category: 'disaster' },
+    
+    // 1990년대
+    { year: 1991, month: 6, label: '피나투보 화산 폭발', type: 'disaster', impact: -1.2, category: 'disaster' },
+    { year: 1992, month: 6, label: '리우 지구정상회의', type: 'policy', impact: 1.2, category: 'policy' },
+    { year: 1993, month: 7, label: '미시시피 대홍수', type: 'disaster', impact: -1.5, category: 'disaster' },
+    { year: 1994, month: 3, label: '기후변화협약 발효', type: 'policy', impact: 0.7, category: 'policy' },
+    { year: 1995, month: 7, label: '시카고 폭염', type: 'disaster', impact: -0.9, category: 'disaster' },
+    { year: 1995, month: 12, label: 'COP1 베를린', type: 'policy', impact: 0.8, category: 'policy' },
+    { year: 1996, month: 5, label: '에베레스트 조난사고', type: 'disaster', impact: 0, category: 'awareness' },
+    { year: 1997, month: 12, label: '교토 의정서', type: 'policy', impact: 2.1, category: 'policy' },
+    { year: 1998, month: 8, label: '슈퍼 엘니뇨', type: 'climate', impact: -1.5, category: 'disaster' },
+    { year: 1999, month: 12, label: '베네수엘라 홍수', type: 'disaster', impact: -1.1, category: 'disaster' },
+    
+    // 2000년대
+    { year: 2000, month: 11, label: 'COP6 헤이그 실패', type: 'policy', impact: -0.5, category: 'policy' },
+    { year: 2001, month: 3, label: '미국 교토의정서 거부', type: 'policy', impact: -1.3, category: 'policy' },
+    { year: 2002, month: 8, label: '유럽 대홍수', type: 'disaster', impact: -1.7, category: 'disaster' },
+    { year: 2003, month: 8, label: '유럽 폭염', type: 'disaster', impact: -2.3, category: 'disaster' },
+    { year: 2004, month: 12, label: '인도양 쓰나미', type: 'disaster', impact: -2.8, category: 'disaster' },
+    { year: 2005, month: 2, label: '교토의정서 발효', type: 'policy', impact: 1.1, category: 'policy' },
+    { year: 2005, month: 8, label: '허리케인 카트리나', type: 'disaster', impact: -4.2, category: 'disaster' },
+    { year: 2006, month: 5, label: '불편한 진실', type: 'climate', impact: 1.8, category: 'awareness' },
+    { year: 2006, month: 10, label: '스턴 보고서', type: 'policy', impact: 1.2, category: 'awareness' },
+    { year: 2007, month: 2, label: 'IPCC 4차 보고서', type: 'policy', impact: 0.9, category: 'awareness' },
+    { year: 2007, month: 8, label: '북극 해빙 최저', type: 'climate', impact: 0.6, category: 'awareness' },
+    { year: 2007, month: 10, label: 'IPCC 노벨상', type: 'policy', impact: 1.5, category: 'awareness' },
+    { year: 2008, month: 5, label: '중국 쓰촨성 지진', type: 'disaster', impact: -1.9, category: 'disaster' },
+    { year: 2008, month: 9, label: '금융위기 + 유가 급등', type: 'disaster', impact: -8.7, category: 'disaster' },
+    { year: 2009, month: 12, label: 'COP15 코펜하겐', type: 'policy', impact: -0.5, category: 'policy' },
+    
+    // 2010년대
+    { year: 2010, month: 1, label: '아이티 지진', type: 'disaster', impact: -1.2, category: 'disaster' },
+    { year: 2010, month: 4, label: 'BP 기름 유출', type: 'disaster', impact: -3.1, category: 'disaster' },
+    { year: 2010, month: 7, label: '러시아 폭염', type: 'disaster', impact: -2.8, category: 'disaster' },
+    { year: 2010, month: 8, label: '파키스탄 홍수', type: 'disaster', impact: -1.3, category: 'disaster' },
+    { year: 2010, month: 11, label: 'COP16 칸쿤', type: 'policy', impact: 0.4, category: 'policy' },
+    { year: 2011, month: 3, label: '후쿠시마 원전사고', type: 'disaster', impact: -5.5, category: 'disaster' },
+    { year: 2011, month: 7, label: '동아프리카 가뭄', type: 'disaster', impact: -0.8, category: 'disaster' },
+    { year: 2011, month: 10, label: '태국 대홍수', type: 'disaster', impact: -1.6, category: 'disaster' },
+    { year: 2011, month: 12, label: '더반 플랫폼', type: 'policy', impact: 0.5, category: 'policy' },
+    { year: 2012, month: 6, label: '리우+20 정상회의', type: 'policy', impact: 0.3, category: 'policy' },
+    { year: 2012, month: 9, label: '북극 해빙 역대 최저', type: 'climate', impact: 0.7, category: 'awareness' },
+    { year: 2012, month: 10, label: '허리케인 샌디', type: 'disaster', impact: -3.7, category: 'disaster' },
+    { year: 2013, month: 5, label: '마우나로아 CO2 400ppm', type: 'climate', impact: 0.4, category: 'awareness' },
+    { year: 2013, month: 9, label: 'IPCC 5차 보고서', type: 'policy', impact: 0.9, category: 'awareness' },
+    { year: 2013, month: 11, label: '필리핀 태풍 하이옌', type: 'disaster', impact: -2.2, category: 'disaster' },
+    { year: 2014, month: 3, label: '세계은행 탄소가격 지지', type: 'policy', impact: 0.6, category: 'policy' },
+    { year: 2014, month: 9, label: 'UN 기후정상회의', type: 'policy', impact: 1.1, category: 'policy' },
+    { year: 2014, month: 11, label: '미중 기후 합의', type: 'policy', impact: 2.3, category: 'policy' },
+    { year: 2015, month: 5, label: '네팔 지진', type: 'disaster', impact: -0.9, category: 'disaster' },
+    { year: 2015, month: 6, label: '교황 회칙 발표', type: 'policy', impact: 0.7, category: 'awareness' },
+    { year: 2015, month: 8, label: '알래스카 산불', type: 'disaster', impact: -0.6, category: 'disaster' },
+    { year: 2015, month: 12, label: '파리 기후협약', type: 'policy', impact: 4.5, category: 'policy' },
+    { year: 2016, month: 4, label: '파리협약 서명', type: 'policy', impact: 1.7, category: 'policy' },
+    { year: 2016, month: 8, label: '중국 홍수', type: 'disaster', impact: -1.1, category: 'disaster' },
+    { year: 2016, month: 10, label: '허리케인 매튜', type: 'disaster', impact: -1.4, category: 'disaster' },
+    { year: 2016, month: 11, label: '파리협약 발효', type: 'policy', impact: 1.9, category: 'policy' },
+    { year: 2017, month: 6, label: '미국 파리협약 탈퇴', type: 'policy', impact: -2.1, category: 'policy' },
+    { year: 2017, month: 8, label: '허리케인 하비', type: 'disaster', impact: -2.8, category: 'disaster' },
+    { year: 2017, month: 9, label: '허리케인 어마/마리아', type: 'disaster', impact: -3.2, category: 'disaster' },
+    { year: 2017, month: 11, label: 'COP23 본', type: 'policy', impact: 0.3, category: 'policy' },
+    { year: 2018, month: 7, label: '전 세계 동시 폭염', type: 'disaster', impact: -1.9, category: 'disaster' },
+    { year: 2018, month: 8, label: '캘리포니아 산불', type: 'disaster', impact: -1.5, category: 'disaster' },
+    { year: 2018, month: 10, label: 'IPCC 1.5도 특별보고서', type: 'policy', impact: 1.2, category: 'awareness' },
+    { year: 2018, month: 12, label: 'COP24 카토비체', type: 'policy', impact: 0.6, category: 'policy' },
+    { year: 2019, month: 3, label: '사이클론 이다이', type: 'disaster', impact: -1.3, category: 'disaster' },
+    { year: 2019, month: 5, label: '기후비상 선언 확산', type: 'policy', impact: 0.8, category: 'awareness' },
+    { year: 2019, month: 8, label: '아마존 산불', type: 'disaster', impact: -1.7, category: 'disaster' },
+    { year: 2019, month: 9, label: '그레타 툰베리 UN 연설', type: 'climate', impact: 2.8, category: 'awareness' },
+    { year: 2019, month: 9, label: 'UN 기후행동 정상회의', type: 'policy', impact: 1.4, category: 'policy' },
+    { year: 2019, month: 12, label: '호주 산불 시작', type: 'disaster', impact: -3.2, category: 'disaster' },
+    { year: 2019, month: 12, label: 'COP25 마드리드', type: 'policy', impact: -0.2, category: 'policy' },
+    
+    // 2020년대
+    { year: 2020, month: 1, label: '시베리아 이상고온', type: 'climate', impact: -0.7, category: 'disaster' },
+    { year: 2020, month: 2, label: '호주 산불 정점', type: 'disaster', impact: -4.8, category: 'disaster' },
+    { year: 2020, month: 7, label: '중국 대홍수', type: 'disaster', impact: -1.8, category: 'disaster' },
+    { year: 2020, month: 9, label: '캘리포니아 산불 최악', type: 'disaster', impact: -2.1, category: 'disaster' },
+    { year: 2020, month: 9, label: '중국 탄소중립 선언', type: 'policy', impact: 2.7, category: 'policy' },
+    { year: 2020, month: 11, label: '미국 파리협약 복귀', type: 'policy', impact: 3.5, category: 'policy' },
+    { year: 2020, month: 12, label: 'COP26 연기', type: 'policy', impact: -0.3, category: 'policy' },
+    { year: 2021, month: 2, label: '텍사스 한파', type: 'disaster', impact: -2.3, category: 'disaster' },
+    { year: 2021, month: 4, label: '바이든 기후정상회의', type: 'policy', impact: 2.1, category: 'policy' },
+    { year: 2021, month: 5, label: 'IEA 넷제로 로드맵', type: 'policy', impact: 1.3, category: 'policy' },
+    { year: 2021, month: 7, label: '독일·벨기에 홍수', type: 'disaster', impact: -2.6, category: 'disaster' },
+    { year: 2021, month: 8, label: 'IPCC 6차 보고서', type: 'policy', impact: 2.9, category: 'awareness' },
+    { year: 2021, month: 11, label: 'COP26 글래스고', type: 'policy', impact: 1.8, category: 'policy' },
+    { year: 2021, month: 11, label: '메탄 배출 감축 서약', type: 'policy', impact: 0.9, category: 'policy' },
+    { year: 2022, month: 2, label: 'IPCC 영향 보고서', type: 'policy', impact: 0.7, category: 'awareness' },
+    { year: 2022, month: 4, label: 'IPCC 완화 보고서', type: 'policy', impact: 0.6, category: 'awareness' },
+    { year: 2022, month: 6, label: '파키스탄 대홍수', type: 'disaster', impact: -2.4, category: 'disaster' },
+    { year: 2022, month: 7, label: '유럽 가뭄', type: 'disaster', impact: -3.5, category: 'disaster' },
+    { year: 2022, month: 8, label: '미국 IRA 법안', type: 'policy', impact: 3.8, category: 'policy' },
+    { year: 2022, month: 11, label: 'COP27 샤름엘셰이크', type: 'policy', impact: 0.7, category: 'policy' },
+    { year: 2023, month: 3, label: 'IPCC 종합보고서', type: 'policy', impact: 0.8, category: 'awareness' },
+    { year: 2023, month: 5, label: '캐나다 산불', type: 'disaster', impact: -1.9, category: 'disaster' },
+    { year: 2023, month: 7, label: '역대 최고 기온', type: 'climate', impact: -2.4, category: 'disaster' },
+    { year: 2023, month: 8, label: '하와이 산불', type: 'disaster', impact: -2.1, category: 'disaster' },
+    { year: 2023, month: 9, label: '리비아 홍수', type: 'disaster', impact: -1.4, category: 'disaster' },
+    { year: 2023, month: 12, label: 'COP28 두바이', type: 'policy', impact: 2.1, category: 'policy' },
+    { year: 2023, month: 12, label: '화석연료 전환 합의', type: 'policy', impact: 1.6, category: 'policy' },
+    { year: 2024, month: 2, label: '글로벌 기온 +1.5도 돌파', type: 'climate', impact: -1.8, category: 'awareness' },
+    { year: 2024, month: 4, label: 'EU 탄소국경세 시행', type: 'policy', impact: 1.2, category: 'policy' },
+    { year: 2024, month: 6, label: '기후 기술 투자 붐', type: 'climate', impact: 5.2, category: 'opportunity' },
+    { year: 2024, month: 8, label: '남극 해빙 최저 기록', type: 'climate', impact: -1.1, category: 'awareness' },
+    { year: 2024, month: 9, label: '글로벌 재생E 투자 1조달러', type: 'policy', impact: 2.9, category: 'opportunity' }
         ];
 
         // 연도별 영향도 계산 (히트맵용)
@@ -966,14 +1046,20 @@
                         },
                         {
                             label: '기후 이벤트',
-                            data: allEvents.map(e => ({ x: e.year, y: sp500Data[e.year - 1985] })),
-                            pointStyle: 'triangle',
-                            pointRadius: 8,
-                            pointBackgroundColor: '#ff7b72',
-                            pointBorderColor: '#fff',
-                            pointBorderWidth: 2,
-                            showLine: false,
-                            pointRotation: 180
+    data: allEvents.map(e => ({ 
+        x: e.year, 
+        y: sp500Data[e.year - 1985],
+        label: e.label  // 이벤트 이름 추가
+    })),
+    pointStyle: 'triangle',
+    pointRadius: 12,  // 8에서 12로 증가
+    pointHoverRadius: 16,  // 호버 시 더 크게
+    pointBackgroundColor: '#ff7b72',
+    pointBorderColor: '#fff',
+    pointBorderWidth: 3,  // 2에서 3으로 증가
+    showLine: false,
+    pointRotation: 180,
+    pointHoverBorderWidth: 4  // 호버 시 테두리도 두껍게
                         }
                     ]
                 },
