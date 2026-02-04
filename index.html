@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>기후 변화와 주식시장 분석</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 40px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 500px;
+            margin-bottom: 40px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .timeline {
+            margin-top: 40px;
+        }
+
+        .event-card {
+            background: white;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .event-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .event-date {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+
+        .event-title {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .event-description {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .stock-impact {
+            background: #fff3cd;
+            border-left: 3px solid #ffc107;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+        }
+
+        .stock-impact strong {
+            color: #856404;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+
+        .info-box h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .chart-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌍 기후 변화와 주식시장의 상관관계</h1>
+            <p class="subtitle">주요 기후 이벤트가 NASDAQ & S&P 500에 미친 영향 분석</p>
+        </header>
+
+        <div class="main-content">
+            <div class="info-box">
+                <h3>📊 이 사이트에 대하여</h3>
+                <p>과거 50년간의 주요 기후 변화 이벤트와 주식시장 지수의 변화를 시각화했습니다. 
+                   차트에서 주요 기후 이벤트 시점을 확인하고, 그 당시 주식시장이 어떻게 반응했는지 살펴보세요.</p>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="stockChart"></canvas>
+            </div>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #4285f4;"></div>
+                    <span>S&P 500 지수</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #34a853;"></div>
+                    <span>NASDAQ 지수</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #ea4335;"></div>
+                    <span>주요 기후 이벤트</span>
+                </div>
+            </div>
+
+            <div class="timeline">
+                <h2 style="text-align: center; margin-bottom: 30px; color: #2c3e50;">🌡️ 주요 기후 이벤트 타임라인</h2>
+                
+                <div class="event-card">
+                    <div class="event-date">1988년 6월</div>
+                    <div class="event-title">제임스 한센의 의회 증언</div>
+                    <div class="event-description">
+                        NASA 과학자 제임스 한센이 미국 의회에서 지구 온난화가 진행 중이라고 증언하며 
+                        기후 변화가 공식적으로 정치 의제로 부상했습니다.
+                    </div>
+                    <div class="stock-impact">
+                        <strong>📈 시장 영향:</strong> 단기적 영향은 미미했으나, 환경 규제에 대한 논의가 시작되면서 
+                        에너지 섹터에 점진적 영향을 미치기 시작했습니다.
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-date">1997년 12월</div>
+                    <div class="event-title">교토 의정서 채택</div>
+                    <div class="event-description">
+                        선진국들의 온실가스 감축 의무를 규정한 최초의 국제 협약이 채택되었습니다. 
+                        37개 선진국이 온실가스 배출량을 1990년 대비 평균 5.2% 감축하기로 합의했습니다.
+                    </div>
+                    <div class="stock-impact">
+                        <strong>📈 시장 영향:</strong> 재생에너지 관련 주식이 주목받기 시작했으나, 
+                        당시는 닷컴 버블 시기로 기후 관련 이슈는 시장에 큰 영향을 주지 못했습니다.
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-date">2005년 8월</div>
+                    <div class="event-title">허리케인 카트리나</div>
+                    <div class="event-description">
+                        미국 역사상 가장 파괴적인 허리케인 중 하나로, 뉴올리언스를 황폐화시켰습니다. 
+                        1,800명 이상이 사망하고 1,250억 달러의 피해가 발생했습니다.
+                    </div>
+                    <div class="stock-impact">
+                        <strong>📉 시장 영향:</strong> 유가가 급등하며 S&P 500이 단기적으로 하락했습니다. 
+                        보험 회사들의 주가가 큰 타격을 받았고, 재건 관련 건설주는 상승했습니다.
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-date">2006년 5월</div>
+                    <div class="event-title">앨 고어의 "불편한 진실" 개봉</div>
+                    <div class="event-description">
+                        기후 변화에 대한 대중의 인식을 크게 높인 다큐멘터리가 개봉되어 
+                        전 세계적으로 환경 문제에 대한 관심이 폭발적으로 증가했습니다.
+                    </div>
+                    <div class="stock-impact">
+                        <strong>📈 시장 영향:</strong> 태양광, 풍력 등 청정에너지 기업들의 주가가 상승세를 보였고, 
+                        ESG 투자에 대한 관심이 높아지기 시작했습니다.
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-date">2007년 10월</div>
+                    <div class="event-title">IPCC 노벨평화상 수상</div>
+                    <div class="event-description">
+                        기후변화에관한정부간협의체(IPCC)가 노벨평화상을 수상하며 
+                        기후 과학의 신뢰성이 국제적으로 인정받았습니다.
+                    </div>
+                    <div class="stock-impact">
+                        <strong>📈 시장 영향:</strong> 녹색 기술 기업들에 대한 투자가 증가했으나, 
+                        곧이어 발생한 금융위기로 인해 영향이 상쇄되었습니다.
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-date">2010년 여름</div>
+                    <div class="event-title">러시아 폭염과 산불</div>
+                    <div class="event-description">
+                        러시아에서 130년 만의 최악의 폭염이 발생하여 55,000명 이상이 사망했고, 
+                        대규모 산불로 곡물 생산이 크게 감소했습니다.
+                    </div>
+                    <div class="stock-impact">
+                        <strong>📈 시장 영향:</strong> 밀 가격이 급등하며 식량 관련 주식이 상승했고, 
+                        농업 기술 기업들이 주목받았습니다.
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-date">2012년 10월</div>
+                    <div class="event-title">허리케인 샌디</div>
+                    <div class="event-description">
+                        뉴욕을 강타한 초대형 허리케인으로 650억 달러의 피해를 입혔습니다. 
+                        월스트리트가 2일간 폐쇄되는 초유의 사태가 발생했습니다.
+                    </div>
+                    <div class="stock-impact">
+                        <strong>📉 시장 영향:</strong> 시장이 이틀간 폐쇄되었고, 재개 후 보험 및 유틸리티 주가 하락했습니다. 
+                        기후 리스크에 대한 월스트리트의 인식이 크게 변화했습니다.
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-date">2015년 12월</div>
+                    <div class="event-title">파리 기후협약 체결</div>
+                    <div class="event-description">
+                        195개국이 지구 평균 기온 상승을 산업화 이전 대비 2°C 이하로 제한하기로 합의한 
+                        역사적인 협약이 체결되었습니다.
+                    </div>
+                    <div class="stock-impact">
+                        <strong>📈 시장 영향:</strong> 재생에너지 기업들의 주가가 급등했고, 
+                        화석연료 기업들은 장기적 압박을 받기 시작했습니다. ESG 투자가 주류로 부상했습니다.
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-date">2018년 여름</div>
+                    <div class="event-title">전 세계 동시 폭염</div>
+                    <div class="event-description">
+                        북반구 전역에서 기록적인 폭염이 발생했습니다. 일본에서만 1,000명 이상이 사망했고, 
+                        유럽과 북미에서도 극심한 더위가 지속되었습니다.
+                    </div>
+                    <div class="stock-impact">
+                        <strong>📊 시장 영향:</strong> 에어컨 제조사, 음료 회사 등의 주가가 상승했고, 
+                        기후 적응 기술에 대한 투자가 증가했습니다.
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-date">2019년 9월</div>
+                    <div class="event-title">그레타 툰베리 UN 연설</div>
+                    <div class="event-description">
+                        10대 환경운동가 그레타 툰베리가 UN 기후행동 정상회의에서 
+                        세계 지도자들을 향해 강력한 메시지를 전달했습니다.
+                    </div>
+                    <div class="stock-impact">
+                        <strong>📈 시장 영향:</strong> 청년층의 환경 의식이 높아지며 ESG 펀드로의 자금 유입이 급증했고, 
+                        친환경 기업들의 브랜드 가치가 상승했습니다.
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-date">2020년 여름</div>
+                    <div class="event-title">호주 대형 산불</div>
+                    <div class="event-description">
+                        호주에서 역사상 최악의 산불 시즌이 발생하여 1,860만 헥타르가 소실되고 
+                        10억 마리 이상의 동물이 폐사했습니다.
+                    </div>
+                    <div class="stock-impact">
+                        <strong>📉 시장 영향:</strong> 호주 관광 및 농업 관련 주식이 타격을 받았고, 
+                        재난 관리 및 소방 기술 기업들이 주목받았습니다.
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-date">2021년 8월</div>
+                    <div class="event-title">IPCC 6차 보고서 발표</div>
+                    <div class="event-description">
+                        "인류에 대한 코드 레드"라는 표현과 함께 기후 변화가 명백히 인간 활동 때문이라는 
+                        가장 강력한 과학적 증거가 제시되었습니다.
+                    </div>
+                    <div class="stock-impact">
+                        <strong>📈 시장 영향:</strong> 탄소 중립 관련 기업들의 주가가 상승했고, 
+                        탄소 배출권 가격이 급등했습니다. 기후 리스크가 투자 결정의 핵심 요소로 자리잡았습니다.
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-date">2022년 여름</div>
+                    <div class="event-title">유럽 극심한 가뭄</div>
+                    <div class="event-description">
+                        500년 만의 최악의 가뭄이 유럽을 강타하여 주요 강들이 말라붙고 
+                        농업과 에너지 생산에 심각한 차질이 발생했습니다.
+                    </div>
+                    <div class="stock-impact">
+                        <strong>📉 시장 영향:</strong> 유럽 에너지 위기가 심화되며 유틸리티 주가가 불안정해졌고, 
+                        물 관리 기술 기업들의 가치가 상승했습니다.
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-date">2023년 7월</div>
+                    <div class="event-title">역대 최고 기온 기록 경신</div>
+                    <div class="event-description">
+                        2023년 7월이 기록상 가장 더운 달로 기록되었고, 전 세계적으로 
+                        극단적인 기상 현상이 빈발했습니다.
+                    </div>
+                    <div class="stock-impact">
+                        <strong>📊 시장 영향:</strong> 기후 기술(ClimaTech) 섹터에 대한 투자가 사상 최고치를 기록했고, 
+                        전통적 에너지 기업들의 전환 압박이 강화되었습니다.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 차트 데이터 준비 (1985-2024년, 간소화된 데이터)
+        const years = [
+            1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 
+            1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 
+            2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 
+            2018, 2019, 2020, 2021, 2022, 2023, 2024
+        ];
+
+        // S&P 500 지수 (대략적인 연말 종가, 정규화)
+        const sp500Data = [
+            211, 242, 247, 277, 353, 330, 417, 436, 466, 459, 616,
+            741, 970, 1229, 1469, 1320, 1148, 880, 1112, 1212, 1248, 1418,
+            1468, 903, 1115, 1258, 1258, 1426, 1848, 2059, 2044, 2239, 2674,
+            2507, 3231, 3756, 4766, 3840, 4770, 5200
+        ];
+
+        // NASDAQ 지수 (대략적인 연말 종가, 정규화)
+        const nasdaqData = [
+            325, 349, 331, 381, 455, 374, 586, 677, 777, 752, 1052,
+            1291, 1570, 2193, 4069, 2471, 1950, 1336, 2003, 2175, 2205, 2415,
+            2652, 1577, 2269, 2653, 2605, 3020, 4177, 4736, 5007, 5383, 6903,
+            6635, 8973, 12888, 15645, 10939, 15011, 16825
+        ];
+
+        // 주요 기후 이벤트 표시 위치 (년도 인덱스)
+        const climateEvents = [
+            { year: 1988, label: '한센 증언' },
+            { year: 1997, label: '교토의정서' },
+            { year: 2005, label: '카트리나' },
+            { year: 2006, label: '불편한진실' },
+            { year: 2010, label: '러시아폭염' },
+            { year: 2012, label: '샌디' },
+            { year: 2015, label: '파리협약' },
+            { year: 2018, label: '폭염' },
+            { year: 2019, label: '툰베리' },
+            { year: 2021, label: 'IPCC 6차' },
+            { year: 2023, label: '최고기온' }
+        ];
+
+        // 차트 생성
+        const ctx = document.getElementById('stockChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: years,
+                datasets: [
+                    {
+                        label: 'S&P 500',
+                        data: sp500Data,
+                        borderColor: '#4285f4',
+                        backgroundColor: 'rgba(66, 133, 244, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    },
+                    {
+                        label: 'NASDAQ',
+                        data: nasdaqData,
+                        borderColor: '#34a853',
+                        backgroundColor: 'rgba(52, 168, 83, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '주식시장 지수 추이와 주요 기후 이벤트 (1985-2024)',
+                        font: {
+                            size: 18,
+                            weight: 'bold'
+                        },
+                        padding: 20
+                    },
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            font: {
+                                size: 14
+                            },
+                            padding: 15
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            title: function(context) {
+                                return context[0].label + '년';
+                            },
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.y.toFixed(0);
+                            },
+                            afterLabel: function(context) {
+                                const year = parseInt(context.label);
+                                const event = climateEvents.find(e => e.year === year);
+                                return event ? '\n🌍 ' + event.label : '';
+                            }
+                        }
+                    },
+                    annotation: {
+                        annotations: climateEvents.reduce((acc, event) => {
+                            const yearIndex = years.indexOf(event.year);
+                            if (yearIndex !== -1) {
+                                acc[`line${event.year}`] = {
+                                    type: 'line',
+                                    xMin: yearIndex,
+                                    xMax: yearIndex,
+                                    borderColor: '#ea4335',
+                                    borderWidth: 2,
+                                    borderDash: [5, 5],
+                                    label: {
+                                        display: true,
+                                        content: event.label,
+                                        position: 'top'
+                                    }
+                                };
+                            }
+                            return acc;
+                        }, {})
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: '연도',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: '지수',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        },
+                        beginAtZero: true
+                    }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
+                }
+            }
+        });
+
+        // 기후 이벤트 마커 추가
+        climateEvents.forEach(event => {
+            const yearIndex = years.indexOf(event.year);
+            if (yearIndex !== -1) {
+                chart.data.datasets.push({
+                    label: event.label,
+                    data: [{x: yearIndex, y: Math.max(sp500Data[yearIndex], nasdaqData[yearIndex])}],
+                    pointStyle: 'triangle',
+                    pointRadius: 8,
+                    pointBackgroundColor: '#ea4335',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    showLine: false
+                });
+            }
+        });
+        
+        chart.update();
+    </script>
+</body>
+</html>
