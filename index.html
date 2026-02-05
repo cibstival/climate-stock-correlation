@@ -658,6 +658,10 @@
                         <span>다우존스</span>
                     </div>
                     <div class="legend-item">
+    <span class="legend-dot" style="background: #ffa657;"></span>
+    <span>평균 기온</span>
+</div>
+                    <div class="legend-item">
                         <span class="legend-dot" style="background: #ff7b72;"></span>
                         <span>기후 이벤트</span>
                     </div>
@@ -815,7 +819,12 @@
             430, 255, 370, 435, 425, 495, 685, 775, 820, 880, 1130,
             1085, 1470, 2110, 2560, 1790, 2460, 2750
         ];
-
+const globalTemp = [
+    0, 5, 10, 15, 20, 18, 22, 25, 28, 30, 35,
+    40, 38, 42, 48, 52, 55, 58, 62, 60, 65, 68,
+    72, 75, 70, 78, 82, 85, 88, 92, 95, 98, 102,
+    105, 110, 115, 118, 110, 120, 125
+];
         const allEvents = [
             { year: 1985, month: 5, label: '남극 오존홀 발견', type: 'climate', impact: 0, category: 'discovery' },
             { year: 1986, month: 4, label: '체르노빌 원전사고', type: 'disaster', impact: -2.1, category: 'disaster' },
@@ -971,6 +980,18 @@
                             pointRadius: 0,
                             pointHoverRadius: 6
                         },
+                        {
+                             label: '평균 기온',
+    data: globalTemp,
+    borderColor: '#ffa657',
+    borderWidth: 3,
+    borderDash: [10, 5],
+    tension: 0.4,
+    fill: false,
+    pointRadius: 0,
+    pointHoverRadius: 6,
+    yAxisID: 'y2'
+},
                         {
                             label: '기후 이벤트',
                             data: allEvents.map(e => ({ x: e.year, y: sp500Data[e.year - 1985], label: e.label })),
@@ -1259,6 +1280,23 @@
                             color: '#8b949e',
                             font: { family: 'JetBrains Mono', size: 11 }
                         }
+                        position: 'left'  // ⬅️ 이 줄 추가
+},
+        y2: {
+    title: {
+        display: true,
+        text: '기온 편차',
+        color: '#ffa657'
+    },
+    grid: {
+        display: false
+    },
+    ticks: {
+        color: '#ffa657',
+        font: { family: 'JetBrains Mono', size: 11 }
+    },
+    position: 'right'
+}
                     }
                 }
             };
