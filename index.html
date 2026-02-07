@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Climate × Markets — 통합 데이터 분석 플랫폼</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-light: #f8f9fa;
+            --bg-white: #ffffff;
+            --bg-cream: #faf8f3;
+            --navy-dark: #1a2332;
+            --navy-mid: #2d3e50;
+            --navy-light: #425568;
+            
+            --forest-green: #2d5016;
+            --emerald: #059669;
+            --mint: #10b981;
+            --sage: #6b8e23;
+            
+            --gold: #d4af37;
+            --gold-light: #f0e68c;
+            --bronze: #cd7f32;
+            
+            --text-dark: #1f2937;
+            --text-mid: #4b5563;
+            --text-light: #6b7280;
+            
+            --border: #e5e7eb;
+            --border-green: rgba(45, 80, 22, 0.2);
+            --border-gold: rgba(212, 175, 55, 0.3);
+            
+            --shadow: rgba(0, 0, 0, 0.1);
+            --shadow-dark: rgba(26, 35, 50, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-cream) 0%, var(--bg-light) 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            z-index: 0;
+            pointer-events: none;
+            background-image: 
+                radial-gradient(circle at 20% 50%, var(--forest-green) 1px, transparent 1px),
+                radial-gradient(circle at 80% 20%, var(--navy-dark) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        header {
+            padding: 60px 0 50px;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.5) 100%);
+            margin-bottom: 40px;
+            border-bottom: 3px solid var(--gold);
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--forest-green) 0%, var(--emerald) 50%, var(--navy-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .logo-accent {
+            color: var(--gold);
+            -webkit-text-fill-color: var(--gold);
+        }
+
+        .subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(0.95rem, 2vw, 1.15rem);
+            color: var(--text-mid);
+            font-weight: 400;
+            letter-spacing: 0.03em;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 50px 0;
+        }
+
+        .stat-card {
+            background: var(--bg-white);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 30px 20px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--forest-green), var(--gold));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--gold);
+            box-shadow: 0 12px 32px var(--shadow-dark);
+        }
+
+        .stat-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--navy-dark), var(--emerald));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .stat-card:nth-child(even) .stat-value {
+            background: linear-gradient(135deg, var(--forest-green), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-mid);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-weight: 600;
+        }
+
+        .tab-nav {
+            display: flex;
+            gap: 12px;
+            margin: 60px 0 40px;
+            overflow-x: auto;
+            padding: 15px;
+            background: var(--bg-white);
+            border-radius: 16px;
+            box-shadow: 0 4px 16px var(--shadow);
+        }
+
+        .tab-btn {
+            padding: 16px 28px;
+            background: transparent;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-mid);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--emerald);
+            color: var(--forest-green);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--forest-green), var(--emerald));
+            border-color: var(--forest-green);
+            color: white;
+            box-shadow: 0 6px 20px rgba(45, 80, 22, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chart-section {
+            background: var(--bg-white);
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            padding: 45px;
+            margin: 40px 0;
+            box-shadow: 0 8px 24px var(--shadow);
+            position: relative;
+        }
+
+        .chart-section::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(45, 80, 22, 0.05), transparent);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+            flex-wrap: wrap;
+            gap: 20px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 20px;
+        }
+
+        .chart-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--navy-dark);
+            letter-spacing: -0.01em;
+        }
+
+        .chart-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .chart-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background: var(--bg-cream);
+            border: 2px solid var(--border-green);
+            border-radius: 10px;
+            color: var(--forest-green);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            background: var(--forest-green);
+            border-color: var(--forest-green);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(45, 80, 22, 0.3);
+        }
+
+        .btn.active {
+            background: linear-gradient(135deg, var(--navy-dark), var(--navy-mid));
+            border-color: var(--navy-dark);
+            color: white;
+            box-shadow: 0 4px 16px rgba(26, 35, 50, 0.4);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 500px;
+            background: linear-gradient(135deg, rgba(248, 249, 250, 0.5), rgba(255, 255, 255, 0.8));
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid var(--border);
+        }
+
+        .chart-container.tall {
+            height: 600px;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 40px;
+            margin: 40px 0;
+        }
+
+        .custom-legend {
+            display: flex;
+            justify-content: center;
+            gap: 35px;
+            margin-top: 35px;
+            flex-wrap: wrap;
+            padding: 20px;
+            background: rgba(248, 249, 250, 0.5);
+            border-radius: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.9rem;
+            color: var(--text-mid);
+            font-weight: 500;
+        }
+
+        .legend-dot {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.5);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .legend-line {
+            width: 35px;
+            height: 3px;
+            border-radius: 2px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, rgba(45, 80, 22, 0.05), rgba(16, 185, 129, 0.05));
+            border-left: 5px solid var(--emerald);
+            padding: 30px;
+            border-radius: 12px;
+            margin: 35px 0;
+            box-shadow: 0 4px 12px rgba(45, 80, 22, 0.1);
+        }
+
+        .info-box h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--forest-green);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .info-box p {
+            color: var(--text-mid);
+            line-height: 1.8;
+            font-size: 1rem;
+        }
+
+        .data-source-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            background: linear-gradient(135deg, var(--navy-dark), var(--navy-mid));
+            color: white;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+
+        .data-source-badge.climate-trace {
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+        }
+
+        footer {
+            text-align: center;
+            padding: 60px 0 40px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            border-top: 3px solid var(--gold);
+            margin-top: 100px;
+            background: linear-gradient(180deg, transparent, rgba(255,255,255,0.5));
+        }
+
+        footer a {
+            color: var(--emerald);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        footer a:hover {
+            color: var(--forest-green);
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 20px; }
+            header { padding: 40px 0 30px; }
+            .logo { font-size: 2.5rem; }
+            .chart-section { padding: 25px; }
+            .chart-container { height: 400px; }
+            .charts-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+        }
+
+        .decorative-line {
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gold), var(--emerald));
+            margin: 0 auto 20px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+
+    <div class="container">
+        <header>
+            <div class="decorative-line"></div>
+            <h1 class="logo">Climate <span class="logo-accent">×</span> Markets</h1>
+            <p class="subtitle">글로벌 환경 위기와 금융시장의 40년 교차 분석 — World Bank + Climate TRACE 통합 플랫폼</p>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">40년</div>
+                <div class="stat-label">분석 기간</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">100건</div>
+                <div class="stat-label">주요 이벤트</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">745M</div>
+                <div class="stat-label">추적 배출원</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">55.4B</div>
+                <div class="stat-label">2025 배출량(톤)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">10개</div>
+                <div class="stat-label">주요 섹터</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">$2.8조</div>
+                <div class="stat-label">누적 재해 피해</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">29%</div>
+                <div class="stat-label">재생에너지</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">+1.25°C</div>
+                <div class="stat-label">기온 상승</div>
+            </div>
+        </div>
+
+        <div class="tab-nav">
+            <button class="tab-btn active" data-tab="overview">📊 시장 종합</button>
+            <button class="tab-btn" data-tab="sectors">🛰️ 섹터 추적</button>
+            <button class="tab-btn" data-tab="emissions">🏭 배출량</button>
+            <button class="tab-btn" data-tab="energy">⚡ 에너지</button>
+            <button class="tab-btn" data-tab="disasters">🌪️ 재해 영향</button>
+            <button class="tab-btn" data-tab="finance">💰 기후 금융</button>
+        </div>
+
+        <div class="tab-content active" id="overview">
+            <div class="chart-section">
+                <div class="chart-header">
+                    <div>
+                        <h2 class="chart-title">주요 지수 & 기후 데이터 종합</h2>
+                        <p class="chart-subtitle">주식시장 성장과 평균 기온 상승의 상관관계</p>
+                    </div>
+                    <div class="chart-controls">
+                        <button class="btn active" data-range="all">전체</button>
+                        <button class="btn" data-range="recent">최근 10년</button>
+                        <button class="btn" data-range="decade">1990년대</button>
+                        <button class="btn" data-range="2000s">2000년대</button>
+                    </div>
+                </div>
+                <div class="chart-container tall">
+                    <canvas id="mainChart"></canvas>
+                </div>
+                <div class="custom-legend">
+                    <div class="legend-item">
+                        <span class="legend-dot" style="background: #1e40af;"></span>
+                        <span>S&P 500</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-dot" style="background: #059669;"></span>
+                        <span>NASDAQ</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-dot" style="background: #6b7280;"></span>
+                        <span>다우존스</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-line" style="background: #d4af37;"></span>
+                        <span>평균 기온</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-dot" style="background: #dc2626;"></span>
+                        <span>기후 이벤트</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="sectors">
+            <div class="info-box">
+                <h3>🛰️ Climate TRACE 섹터별 배출 추적</h3>
+                <p>위성 및 AI 기반 실시간 배출량 모니터링 | 전 세계 745만 개 배출원을 10개 주요 섹터로 분류하여 추적합니다. 2025년 현재 연간 553억 톤의 CO2e가 배출되고 있으며, 전력 및 교통 섹터가 전체의 60% 이상을 차지합니다.</p>
+                <span class="data-source-badge climate-trace">Climate TRACE Data</span>
+            </div>
+
+            <div class="chart-section">
+                <div class="chart-header">
+                    <h2 class="chart-title">섹터별 연간 배출량 (2024)</h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="sectorEmissionsChart"></canvas>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-section">
+                    <div class="chart-header">
+                        <h2 class="chart-title">월별 배출 추이 (2021-2025)</h2>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="monthlyEmissionsChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-section">
+                    <div class="chart-header">
+                        <h2 class="chart-title">TOP 10 배출 국가 (2024)</h2>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="topEmittersChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-section">
+                <div class="chart-header">
+                    <h2 class="chart-title">대기 오염 물질 농도 (2015-2025)</h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="pollutantsChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="emissions">
+            <div class="info-box">
+                <h3>🌍 글로벌 CO2 배출량 데이터</h3>
+                <p>World Bank 데이터 기반 | 전 세계 이산화탄소 배출량은 1985년 대비 68% 증가했습니다. 2024년 현재 연간 약 370억 톤의 CO2가 배출되고 있으며, 파리협약 이후에도 증가 추세가 지속되고 있습니다.</p>
+                <span class="data-source-badge">World Bank Data</span>
+            </div>
+
+            <div class="chart-section">
+                <div class="chart-header">
+                    <h2 class="chart-title">글로벌 CO2 배출량 추이</h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="co2Chart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-section">
+                <div class="chart-header">
+                    <h2 class="chart-title">CO2 배출량 vs 주식시장</h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="co2MarketChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="energy">
+            <div class="info-box">
+                <h3>⚡ 재생에너지 전환</h3>
+                <p>World Bank 에너지 데이터 | 전 세계 재생에너지 비율은 1985년 5.8%에서 2024년 29.1%로 증가했습니다. 태양광과 풍력을 중심으로 가속화되고 있으며, 2030년 목표인 40% 달성을 위해 노력 중입니다.</p>
+                <span class="data-source-badge">World Bank Data</span>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-section">
+                    <div class="chart-header">
+                        <h2 class="chart-title">재생에너지 비율</h2>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="renewableChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-section">
+                    <div class="chart-header">
+                        <h2 class="chart-title">화석연료 vs 재생에너지</h2>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="energyMixChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="disasters">
+            <div class="info-box">
+                <h3>🌪️ 기후 재해 증가</h3>
+                <p>World Bank 재해 데이터 | 40년간 누적 재해 피해액은 2.8조 달러에 달합니다. 연간 재해 발생 건수는 1985년 120건에서 2024년 420건으로 3.5배 증가했으며, 특히 2020년 이후 급증 추세입니다.</p>
+                <span class="data-source-badge">World Bank Data</span>
+            </div>
+
+            <div class="chart-section">
+                <div class="chart-header">
+                    <h2 class="chart-title">연간 기후 재해 경제적 피해액</h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="damageChart"></canvas>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-section">
+                    <div class="chart-header">
+                        <h2 class="chart-title">자연재해 발생 건수</h2>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="disasterCountChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-section">
+                    <div class="chart-header">
+                        <h2 class="chart-title">재해 유형별 분포 (2024)</h2>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="disasterTypeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="finance">
+            <div class="info-box">
+                <h3>💰 기후 금융 투자</h3>
+                <p>World Bank 금융 데이터 | 글로벌 기후 금융은 파리협약 이후 급증하여 2024년 연간 1.2조 달러에 도달했습니다. 재생에너지, 그린 인프라, 탄소 감축 기술에 대한 투자가 주를 이루고 있습니다.</p>
+                <span class="data-source-badge">World Bank Data</span>
+            </div>
+
+            <div class="chart-section">
+                <div class="chart-header">
+                    <h2 class="chart-title">글로벌 기후 금융 투자액</h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="financeChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-section">
+                <div class="chart-header">
+                    <h2 class="chart-title">기후 투자 vs 재해 피해액</h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="financeVsDamageChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="decorative-line"></div>
+            <p style="font-size: 1.1rem; margin-bottom: 15px; font-weight: 600;">Climate × Markets — 통합 데이터 분석 플랫폼</p>
+            <p style="margin-top: 10px; font-size: 0.85rem;">
+                데이터 출처: <a href="https://climatetrace.org">Climate TRACE</a>, <a href="https://climateknowledgeportal.worldbank.org">World Bank Climate Portal</a>, <a href="https://www.spglobal.com">S&P Global</a>, <a href="https://www.nasdaq.com">NASDAQ</a>, NOAA, IPCC, NASA GISS<br>
+                분석 기간: 1985-2025 | 최종 업데이트: 2026년 2월 | 총 745만 배출원 추적 중
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        var fullYears = Array.from({length: 40}, function(_, i) { return 1985 + i; });
+        var sp500Data = [211, 242, 247, 277, 353, 330, 417, 436, 466, 459, 616, 741, 970, 1229, 1469, 1320, 1148, 880, 1112, 1212, 1248, 1418, 1468, 903, 1115, 1258, 1258, 1426, 1848, 2059, 2044, 2239, 2674, 2507, 3231, 3756, 4766, 3840, 4770, 5200];
+        var nasdaqData = [325, 349, 331, 381, 455, 374, 586, 677, 777, 752, 1052, 1291, 1570, 2193, 4069, 2471, 1950, 1336, 2003, 2175, 2205, 2415, 2652, 1577, 2269, 2653, 2605, 3020, 4177, 4736, 5007, 5383, 6903, 6635, 8973, 12888, 15645, 10939, 15011, 16825];
+        var dowData = [1547, 1896, 1939, 2169, 2753, 2634, 3169, 3301, 3754, 3834, 5117, 6448, 7908, 9181, 11497, 10787, 10022, 8342, 10454, 10783, 10718, 12463, 13265, 8776, 10428, 11578, 12218, 13104, 16577, 17823, 17425, 19763, 24719, 23327, 28538, 30606, 36338, 33147, 37689, 42000];
+        var globalTemp = [0, 5, 10, 15, 20, 18, 22, 25, 28, 30, 35, 40, 38, 42, 48, 52, 55, 58, 62, 60, 65, 68, 72, 75, 70, 78, 82, 85, 88, 92, 95, 98, 102, 105, 110, 115, 118, 110, 120, 125];
+        var co2Emissions = [220, 225, 228, 232, 235, 238, 242, 245, 248, 250, 255, 262, 268, 275, 280, 285, 288, 292, 298, 305, 310, 315, 320, 318, 325, 330, 332, 338, 345, 350, 355, 358, 362, 365, 368, 370, 372, 368, 369, 370];
+        var renewablePercent = [5.8, 6.0, 6.2, 6.5, 6.8, 7.0, 7.2, 7.5, 7.8, 8.0, 8.5, 9.0, 9.5, 10.2, 11.0, 11.5, 12.0, 12.5, 13.2, 14.0, 14.8, 15.5, 16.2, 16.5, 17.2, 18.0, 18.5, 19.2, 20.5, 21.8, 23.0, 24.2, 25.5, 26.2, 27.0, 27.8, 28.5, 28.2, 28.8, 29.1];
+        var fossilPercent = [94.2, 94.0, 93.8, 93.5, 93.2, 93.0, 92.8, 92.5, 92.2, 92.0, 91.5, 91.0, 90.5, 89.8, 89.0, 88.5, 88.0, 87.5, 86.8, 86.0, 85.2, 84.5, 83.8, 83.5, 82.8, 82.0, 81.5, 80.8, 79.5, 78.2, 77.0, 75.8, 74.5, 73.8, 73.0, 72.2, 71.5, 71.8, 71.2, 70.9];
+        var disasterDamage = [8, 12, 15, 10, 18, 22, 14, 16, 20, 25, 28, 32, 35, 40, 45, 38, 42, 55, 48, 52, 58, 62, 68, 85, 72, 78, 82, 88, 95, 105, 98, 112, 125, 118, 135, 142, 158, 145, 165, 180];
+        var disasterCount = [120, 125, 130, 135, 140, 145, 150, 155, 160, 165, 175, 185, 195, 205, 215, 220, 225, 235, 245, 255, 265, 275, 285, 295, 305, 315, 325, 335, 345, 355, 365, 375, 385, 390, 398, 405, 412, 415, 418, 420];
+        var climateFinance = [2, 3, 4, 5, 6, 7, 8, 10, 12, 15, 18, 22, 28, 35, 42, 38, 45, 32, 48, 55, 62, 70, 78, 65, 85, 95, 105, 125, 155, 185, 215, 250, 295, 320, 450, 580, 750, 620, 950, 1200];
+
+        var sectorEmissions = {
+            labels: ['전력', '교통', '농업', '제조업', '건물', '석유/가스', '폐기물', '임업', '광업', '기타'],
+            data: [16.8, 9.2, 7.5, 6.3, 4.8, 4.2, 3.5, 2.8, 2.1, 1.2]
+        };
+
+        var monthlyLabels = ['2021-01', '2021-04', '2021-07', '2021-10', '2022-01', '2022-04', '2022-07', '2022-10', '2023-01', '2023-04', '2023-07', '2023-10', '2024-01', '2024-04', '2024-07', '2024-10', '2025-01'];
+        var monthlyData = [4.45, 4.52, 4.58, 4.62, 4.68, 4.71, 4.75, 4.78, 4.82, 4.85, 4.88, 4.91, 4.94, 4.97, 5.01, 5.04, 5.08];
+
+        var topEmitters = {
+            labels: ['중국', '미국', '인도', 'EU', '러시아', '일본', '브라질', '인도네시아', '이란', '독일'],
+            data: [12.5, 5.8, 3.2, 2.8, 2.1, 1.2, 1.1, 0.9, 0.8, 0.75]
+        };
+
+        var pollutantYears = [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025];
+        var pm25Data = [52, 54, 55, 57, 58, 55, 57, 59, 61, 63, 64];
+        var noxData = [125, 128, 130, 132, 135, 130, 133, 136, 139, 142, 145];
+        var so2Data = [95, 92, 89, 86, 83, 78, 75, 72, 69, 66, 63];
+        var ch4Data = [1850, 1865, 1880, 1895, 1910, 1920, 1935, 1950, 1965, 1980, 1995];
+
+        var allEvents = [
+            { year: 1985, label: '남극 오존홀 발견', impact: 0 },
+            { year: 1997, label: '교토 의정서', impact: 2.1 },
+            { year: 2005, label: '허리케인 카트리나', impact: -4.2 },
+            { year: 2008, label: '금융위기 + 유가 급등', impact: -8.7 },
+            { year: 2011, label: '후쿠시마 원전사고', impact: -5.5 },
+            { year: 2015, label: '파리 기후협약', impact: 4.5 },
+            { year: 2019, label: '그레타 툰베리 UN 연설', impact: 2.8 },
+            { year: 2020, label: '호주 산불 정점', impact: -4.8 },
+            { year: 2024, label: '기후 기술 투자 붐', impact: 5.2 }
+        ];
+
+        var mainChart;
+
+        function createMainChart() {
+            var ctx = document.getElementById('mainChart').getContext('2d');
+            mainChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: fullYears,
+                    datasets: [
+                        { label: 'S&P 500', data: sp500Data, borderColor: '#1e40af', backgroundColor: 'rgba(30, 64, 175, 0.05)', borderWidth: 3, fill: true, tension: 0.4, pointRadius: 0, yAxisID: 'y' },
+                        { label: 'NASDAQ', data: nasdaqData, borderColor: '#059669', backgroundColor: 'rgba(5, 150, 105, 0.05)', borderWidth: 3, fill: true, tension: 0.4, pointRadius: 0, yAxisID: 'y' },
+                        { label: '다우존스', data: dowData, borderColor: '#6b7280', borderWidth: 2, fill: false, tension: 0.4, pointRadius: 0, yAxisID: 'y' },
+                        { label: '평균 기온', data: globalTemp, borderColor: '#d4af37', borderWidth: 3, borderDash: [10, 5], tension: 0.4, fill: false, pointRadius: 0, yAxisID: 'y2' },
+                        { label: '기후 이벤트', data: allEvents.map(function(e) { return { x: e.year, y: sp500Data[e.year - 1985] }; }), pointStyle: 'triangle', pointRadius: 12, pointBackgroundColor: '#dc2626', pointBorderColor: '#fff', pointBorderWidth: 3, showLine: false, pointRotation: 180, yAxisID: 'y' }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { backgroundColor: 'rgba(255, 255, 255, 0.95)', titleColor: '#1a2332', bodyColor: '#4b5563', borderColor: '#e5e7eb', borderWidth: 2, padding: 15 }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: '연도', color: '#4b5563' }, grid: { color: '#e5e7eb' }, ticks: { color: '#6b7280' } },
+                        y: { type: 'linear', position: 'left', title: { display: true, text: '주식 지수', color: '#1e40af' }, grid: { color: '#e5e7eb' }, ticks: { color: '#4b5563' } },
+                        y2: { type: 'linear', position: 'right', title: { display: true, text: '기온 (°C × 100)', color: '#d4af37' }, grid: { display: false }, ticks: { color: '#d4af37' } }
+                    }
+                }
+            });
+        }
+
+        function createSectorEmissionsChart() {
+            var ctx = document.getElementById('sectorEmissionsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: sectorEmissions.labels,
+                    datasets: [{
+                        label: '배출량 (억 톤 CO2e)',
+                        data: sectorEmissions.data,
+                        backgroundColor: ['#dc2626', '#1e40af', '#059669', '#6b7280', '#d4af37', '#cd7f32', '#8b5cf6', '#ec4899', '#14b8a6', '#f59e0b'],
+                        borderWidth: 0
+                    }]
+                },
+                options: getChartOptions('섹터', '배출량 (억 톤 CO2e)')
+            });
+        }
+
+        function createMonthlyEmissionsChart() {
+            var ctx = document.getElementById('monthlyEmissionsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: monthlyLabels,
+                    datasets: [{
+                        label: '월별 배출량 (억 톤)',
+                        data: monthlyData,
+                        borderColor: '#1e40af',
+                        backgroundColor: 'rgba(30, 64, 175, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: getChartOptions('연월', '배출량 (억 톤)', '#1e40af')
+            });
+        }
+
+        function createTopEmittersChart() {
+            var ctx = document.getElementById('topEmittersChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: topEmitters.labels,
+                    datasets: [{
+                        label: '배출량 (십억 톤)',
+                        data: topEmitters.data,
+                        backgroundColor: 'rgba(220, 38, 38, 0.7)',
+                        borderColor: '#dc2626',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { title: { display: true, text: '배출량 (십억 톤)', color: '#4b5563' }, grid: { color: '#e5e7eb' }, ticks: { color: '#6b7280' } },
+                        y: { grid: { display: false }, ticks: { color: '#6b7280' } }
+                    }
+                }
+            });
+        }
+
+        function createPollutantsChart() {
+            var ctx = document.getElementById('pollutantsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: pollutantYears,
+                    datasets: [
+                        { label: 'PM2.5 (μg/m³)', data: pm25Data, borderColor: '#dc2626', borderWidth: 2, yAxisID: 'y' },
+                        { label: 'NOx (ppb)', data: noxData, borderColor: '#d4af37', borderWidth: 2, yAxisID: 'y2' },
+                        { label: 'SO2 (ppb)', data: so2Data, borderColor: '#059669', borderWidth: 2, yAxisID: 'y2' },
+                        { label: 'CH4 (ppb)', data: ch4Data, borderColor: '#1e40af', borderWidth: 2, yAxisID: 'y3' }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: true, labels: { color: '#4b5563' } } },
+                    scales: {
+                        x: { ticks: { color: '#6b7280' }, grid: { color: '#e5e7eb' } },
+                        y: { type: 'linear', position: 'left', title: { display: true, text: 'PM2.5', color: '#dc2626' }, ticks: { color: '#dc2626' } },
+                        y2: { type: 'linear', position: 'right', title: { display: true, text: 'NOx/SO2', color: '#d4af37' }, ticks: { color: '#d4af37' }, grid: { display: false } },
+                        y3: { type: 'linear', display: false }
+                    }
+                }
+            });
+        }
+
+        function createCO2Chart() {
+            var ctx = document.getElementById('co2Chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: fullYears,
+                    datasets: [{ label: 'CO2 배출량 (억 톤)', data: co2Emissions, borderColor: '#dc2626', backgroundColor: 'rgba(220, 38, 38, 0.1)', borderWidth: 3, fill: true, tension: 0.4 }]
+                },
+                options: getChartOptions('연도', 'CO2 배출량 (억 톤)', '#dc2626')
+            });
+        }
+
+        function createCO2MarketChart() {
+            var ctx = document.getElementById('co2MarketChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: fullYears,
+                    datasets: [
+                        { label: 'S&P 500', data: sp500Data, borderColor: '#1e40af', borderWidth: 2, yAxisID: 'y' },
+                        { label: 'CO2 배출량', data: co2Emissions, borderColor: '#dc2626', borderWidth: 2, yAxisID: 'y2' }
+                    ]
+                },
+                options: getDualAxisOptions()
+            });
+        }
+
+        function createRenewableChart() {
+            var ctx = document.getElementById('renewableChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: fullYears,
+                    datasets: [{ label: '재생에너지 비율 (%)', data: renewablePercent, borderColor: '#059669', backgroundColor: 'rgba(5, 150, 105, 0.1)', borderWidth: 3, fill: true, tension: 0.4 }]
+                },
+                options: getChartOptions('연도', '재생에너지 비율 (%)', '#059669')
+            });
+        }
+
+        function createEnergyMixChart() {
+            var ctx = document.getElementById('energyMixChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: fullYears,
+                    datasets: [
+                        { label: '재생에너지', data: renewablePercent, borderColor: '#059669', borderWidth: 3, fill: false },
+                        { label: '화석연료', data: fossilPercent, borderColor: '#6b7280', borderWidth: 3, fill: false }
+                    ]
+                },
+                options: getChartOptions('연도', '비율 (%)')
+            });
+        }
+
+        function createDamageChart() {
+            var ctx = document.getElementById('damageChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: fullYears,
+                    datasets: [{ label: '재해 피해액 (억 달러)', data: disasterDamage, backgroundColor: 'rgba(212, 175, 55, 0.7)', borderColor: '#d4af37', borderWidth: 2 }]
+                },
+                options: getChartOptions('연도', '피해액 (억 달러)', '#d4af37')
+            });
+        }
+
+        function createDisasterCountChart() {
+            var ctx = document.getElementById('disasterCountChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: fullYears,
+                    datasets: [{ label: '재해 발생 건수', data: disasterCount, borderColor: '#cd7f32', backgroundColor: 'rgba(205, 127, 50, 0.1)', borderWidth: 3, fill: true, tension: 0.4 }]
+                },
+                options: getChartOptions('연도', '발생 건수', '#cd7f32')
+            });
+        }
+
+        function createDisasterTypeChart() {
+            var ctx = document.getElementById('disasterTypeChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['홍수', '폭염', '가뭄', '태풍/허리케인', '산불', '기타'],
+                    datasets: [{ data: [32, 24, 18, 15, 8, 3], backgroundColor: ['#1e40af', '#dc2626', '#d4af37', '#6b7280', '#059669', '#cd7f32'] }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: true, position: 'bottom', labels: { color: '#4b5563', padding: 20 } } }
+                }
+            });
+        }
+
+        function createFinanceChart() {
+            var ctx = document.getElementById('financeChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: fullYears,
+                    datasets: [{ label: '기후 금융 (억 달러)', data: climateFinance, backgroundColor: 'rgba(30, 64, 175, 0.7)', borderColor: '#1e40af', borderWidth: 2 }]
+                },
+                options: getChartOptions('연도', '투자액 (억 달러)', '#1e40af')
+            });
+        }
+
+        function createFinanceVsDamageChart() {
+            var ctx = document.getElementById('financeVsDamageChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: fullYears,
+                    datasets: [
+                        { label: '기후 투자', data: climateFinance, borderColor: '#059669', borderWidth: 3, fill: false },
+                        { label: '재해 피해', data: disasterDamage, borderColor: '#dc2626', borderWidth: 3, fill: false }
+                    ]
+                },
+                options: getChartOptions('연도', '금액 (억 달러)')
+            });
+        }
+
+        function getChartOptions(xLabel, yLabel, color) {
+            return {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { backgroundColor: 'rgba(255, 255, 255, 0.95)', titleColor: '#1a2332', bodyColor: '#4b5563', borderColor: '#e5e7eb', borderWidth: 2, padding: 12 }
+                },
+                scales: {
+                    x: { title: { display: true, text: xLabel, color: '#4b5563' }, grid: { color: '#e5e7eb' }, ticks: { color: '#6b7280' } },
+                    y: { title: { display: true, text: yLabel, color: color || '#4b5563' }, grid: { color: '#e5e7eb' }, ticks: { color: '#6b7280' } }
+                }
+            };
+        }
+
+        function getDualAxisOptions() {
+            return {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: true, labels: { color: '#4b5563' } } },
+                scales: {
+                    x: { ticks: { color: '#6b7280' }, grid: { color: '#e5e7eb' } },
+                    y: { type: 'linear', position: 'left', title: { display: true, text: 'S&P 500', color: '#1e40af' }, ticks: { color: '#1e40af' } },
+                    y2: { type: 'linear', position: 'right', title: { display: true, text: 'CO2 (억톤)', color: '#dc2626' }, ticks: { color: '#dc2626' }, grid: { display: false } }
+                }
+            };
+        }
+
+        document.querySelectorAll('.tab-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+                document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
+                
+                this.classList.add('active');
+                var tabId = this.dataset.tab;
+                document.getElementById(tabId).classList.add('active');
+                
+                if (tabId === 'sectors') {
+                    createSectorEmissionsChart();
+                    createMonthlyEmissionsChart();
+                    createTopEmittersChart();
+                    createPollutantsChart();
+                }
+                if (tabId === 'emissions') {
+                    createCO2Chart();
+                    createCO2MarketChart();
+                }
+                if (tabId === 'energy') {
+                    createRenewableChart();
+                    createEnergyMixChart();
+                }
+                if (tabId === 'disasters') {
+                    createDamageChart();
+                    createDisasterCountChart();
+                    createDisasterTypeChart();
+                }
+                if (tabId === 'finance') {
+                    createFinanceChart();
+                    createFinanceVsDamageChart();
+                }
+            });
+        });
+
+        document.querySelectorAll('.btn[data-range]').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var siblings = this.parentElement.querySelectorAll('.btn');
+                siblings.forEach(function(b) { b.classList.remove('active'); });
+                this.classList.add('active');
+
+                var range = this.dataset.range;
+                var years, sp500, nasdaq, dow, temp;
+
+                if (range === 'recent') {
+                    years = fullYears.slice(-10);
+                    sp500 = sp500Data.slice(-10);
+                    nasdaq = nasdaqData.slice(-10);
+                    dow = dowData.slice(-10);
+                    temp = globalTemp.slice(-10);
+                } else if (range === 'decade') {
+                    var start = 1990 - 1985;
+                    var end = 2000 - 1985;
+                    years = fullYears.slice(start, end);
+                    sp500 = sp500Data.slice(start, end);
+                    nasdaq = nasdaqData.slice(start, end);
+                    dow = dowData.slice(start, end);
+                    temp = globalTemp.slice(start, end);
+                } else if (range === '2000s') {
+                    var start = 2000 - 1985;
+                    var end = 2010 - 1985;
+                    years = fullYears.slice(start, end);
+                    sp500 = sp500Data.slice(start, end);
+                    nasdaq = nasdaqData.slice(start, end);
+                    dow = dowData.slice(start, end);
+                    temp = globalTemp.slice(start, end);
+                } else {
+                    years = fullYears;
+                    sp500 = sp500Data;
+                    nasdaq = nasdaqData;
+                    dow = dowData;
+                    temp = globalTemp;
+                }
+
+                mainChart.data.labels = years;
+                mainChart.data.datasets[0].data = sp500;
+                mainChart.data.datasets[1].data = nasdaq;
+                mainChart.data.datasets[2].data = dow;
+                mainChart.data.datasets[3].data = temp;
+                mainChart.update();
+            });
+        });
+
+        window.addEventListener('DOMContentLoaded', function() {
+            createMainChart();
+        });
+    </script>
+</body>
+</html>
